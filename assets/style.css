@@ -1,0 +1,34 @@
+body {
+  background-image: url(clouds.jpg);
+  background-size: cover;
+  background-position: center;
+  font-family: 'Bebas Neue', cursive;
+}
+
+header {
+  background-color: #14213D;
+  color: #FCA311;
+}
+
+header h1 {
+  width: 100%;
+}
+
+#today {
+  background-color: #E5E5E5;
+}
+
+h1, h2 {
+  color: #FCA311;
+}
+
+h1 {
+  background-color: #14213D;
+  border-radius: 5%;
+  width: 23%;
+  padding: 10px;
+}
+
+p {
+  font-family: 'Red Rose', cursive;
+}

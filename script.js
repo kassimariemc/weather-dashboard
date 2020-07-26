@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // city search
   $("#search-button").on("click", function() {
     var searchValue = $("#search-value").val();
 
@@ -11,12 +12,14 @@ $(document).ready(function() {
   $(".history").on("click", "li", function() {
     searchWeather($(this).text());
   });
-
+  
+  // store search history
   function makeRow(text) {
     var li = $("<li>").addClass("list-group-item list-group-item-action").text(text);
     $(".history").append(li);
   }
 
+  // Today's weather
   var APIKey = "&appid=58474e01b34b813bae3350fc4c88341e";
   var queryURLCurrent = "https://api.openweathermap.org/data/2.5/weather?q=";
 
@@ -34,8 +37,6 @@ $(document).ready(function() {
           makeRow(searchValue);
         }
         console.log("current: " + queryURLCurrent + searchValue + APIKey);
-        
-        // clear any old content
 
         // create html content for current weather
         var icon = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png");
@@ -53,6 +54,7 @@ $(document).ready(function() {
     });
   }
 
+  // 5-day Forecast
   var queryURLForecast = "https://api.openweathermap.org/data/2.5/forecast?q=";
   
   function getForecast(searchValue) {
@@ -91,13 +93,13 @@ $(document).ready(function() {
             row.append(col.append(forecastCard));
           }
         }
-        
 
         console.log("forecast: " + queryURLForecast + searchValue + APIKey);
       }
     });
   }
   
+  // UV data
   var queryURLUV = "http://api.openweathermap.org/data/2.5/uvi?appid=58474e01b34b813bae3350fc4c88341e";
 
   function getUVIndex(lat, lon) {
@@ -113,16 +115,20 @@ $(document).ready(function() {
         if(data.value >= 11) {
           btn.attr("style", "background-color: orange");
         }
-        else if(data.value >= 8) {
+        else if(data.value >= 8 && data.value < 11) {
+          btn.removeAttr("style");
           btn.addClass("btn-danger");
         }
-        else if(data.value >= 6) {
+        else if(data.value >= 6 && data.value < 8) {
+          btn.removeClass("btn-danger");
           btn.attr("style", "background-color: pink");
         }
-        else if(data.value >= 3) {
+        else if(data.value >= 3 && data.value < 6) {
+          btn.removeAttr("style");
           btn.addClass("btn-warning");
         }
         else {
+          btn.removeClass("btn-warning");
           btn.addClass("btn-success");
         }
 
@@ -141,4 +147,14 @@ $(document).ready(function() {
   for (var i = 0; i < history.length; i++) {
     makeRow(history[i]);
   }
+
+  var cloudPic = "assets/clouds.jpg";
+  var dayPic = "assets/day-bckgrnd.jpg";
+  var stormPic = "assets/lightning.jpg";
+  var eyePic = "assets/eye.jpg";
+  var umbrellaPic = "assets/umbrellas.jpg";
+  var picArr = [cloudPic, dayPic, stormPic, eyePic, umbrellaPic];
+  var randPic = picArr[Math.floor(Math.random() * picArr.length)];
+
+  $("body").css("background-image", "url(" + randPic + ")");
 });
