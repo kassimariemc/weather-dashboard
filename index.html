@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 
 <head>
   <meta charset="UTF-8">
@@ -19,6 +19,7 @@
 
   <div class="container-fluid">
     <div class="row">
+      <!-- SEARCH & HISTORY -->
       <aside class="col-lg-3 bg-light">
         <h5 class="mt-1">Search for a City:</h5>
         <div class="form-inline form-group">
@@ -26,17 +27,33 @@
           <button class="btn btn-primary" id="search-button"> <i class="fa fa-search"></i> </button>
         </div>
 
-        <ul class="list-group history"></ul>
+        <ul class="list-group list-group-flush history">
+
+        </ul>
       </aside>
 
+      <!-- TODAY FORECAST -->
       <div class="col-lg-9">
-        <div id="today" class="mt-3"></div>
-        <div id="forecast" class="mt-3"></div>
+        <div id="today" class="mt-3 card">
+          <div class="card-body">
+            <h2 id="city"></h2>
+            <p class="p-today">Temperature: <span id="temp-today"></span> &deg;F</p>
+            <p class="p-today">Humidity: <span id="hum-today"></span>%</p>
+            <p class="p-today">Wind Speed: <span id="wind"></span> MPH</p>
+            <p class="p-today">UV Index: <span id="UV"></span></p>
+          </div>
+        </div>
+          
+        <!-- 5 DAY FORECAST -->
+        <div id="forecast" class="mt-3">
+
+        </div>
       </div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
   <script src="script.js"></script>
 </body>
 

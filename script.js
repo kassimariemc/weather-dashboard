@@ -3,6 +3,7 @@ $(document).ready(function() {
     var searchValue = $("#search-value").val();
 
     // clear input box
+    $("#search-value").val("");
 
     searchWeather(searchValue);
   });
@@ -16,10 +17,13 @@ $(document).ready(function() {
     $(".history").append(li);
   }
 
+  var APIKey = "&appid=58474e01b34b813bae3350fc4c88341e";
+  var queryURLCurrent = "https://api.openweathermap.org/data/2.5/weather?q=";
+
   function searchWeather(searchValue) {
     $.ajax({
-      type: "",
-      url: "" + searchValue + "",
+      type: "GET",
+      url: queryURLCurrent + searchValue + APIKey,
       dataType: "json",
       success: function(data) {
         // create history link for this search
@@ -29,12 +33,18 @@ $(document).ready(function() {
     
           makeRow(searchValue);
         }
+        console.log("current: " + queryURLCurrent + searchValue + APIKey);
         
         // clear any old content
 
         // create html content for current weather
-
-        // merge and add to page
+        var icon = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + data.weather[0].icon + ".png");
+        $("#city").html(data.name + " " + "*" + " " + moment().format('dddd' + " " + 'M/DD/YY') + " ");
+        $("#city").append(icon);
+        var tempF = ((data.main.temp -273.15) * 1.80 + 32).toFixed(1);
+        $("#temp-today").text(tempF);
+        $("#hum-today").text(data.main.humidity);
+        $("#wind").text(data.wind.speed);
         
         // call follow-up api endpoints
         getForecast(searchValue);
@@ -42,41 +52,81 @@ $(document).ready(function() {
       }
     });
   }
+
+  var queryURLForecast = "https://api.openweathermap.org/data/2.5/forecast?q=";
   
   function getForecast(searchValue) {
     $.ajax({
-      type: "",
-      url: "" + searchValue + "",
+      type: "GET",
+      url: queryURLForecast + searchValue + APIKey,
       dataType: "json",
       success: function(data) {
-        // overwrite any existing content with title and empty row
+        // clear previous data
+        $("#forecast").empty();
+        
+        $("#forecast").append($("<h1>").text("5-Day Forecast: "));
+        var row = $("<div>").addClass("row");
+        $("#forecast").append(row);
 
+        var days = 0;
         // loop over all forecasts (by 3-hour increments)
         for (var i = 0; i < data.list.length; i++) {
           // only look at forecasts around 3:00pm
           if (data.list[i].dt_txt.indexOf("15:00:00") !== -1) {
-            // create html elements for a bootstrap card
             
+            var col = $("<div>").addClass("col-md-2");
+            var forecastCard = $("<div>").addClass("card text-white bg-primary mb-3").attr("style", "max-width: 16em");
+            var cardBodyEl = $("<div>").addClass("card-body");
 
-            // merge together and put on page
+            days++;
+            var cardHeaderEl = $("<h5>").addClass("card-title").text(moment().add(days, 'days').format('M/DD/YY'));
+            
+            var forecastIconEl = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + data.list[i].weather[0].icon + ".png").addClass("card-title");
+            var tempF = ((data.list[i].main.temp -273.15) * 1.80 + 32).toFixed(1);
+            var forecastTempEl = $("<div>").addClass("card-title").text("Temp: " + tempF + " \u00B0" + "F");
+            var forecastHumEl = $("<div>").addClass("card-title").text("Humidity: " + data.list[i].main.humidity + "%");
+
+            forecastCard.append(cardBodyEl);
+            cardBodyEl.append(cardHeaderEl, forecastIconEl, forecastTempEl, forecastHumEl);
+            row.append(col.append(forecastCard));
           }
         }
+        
+
+        console.log("forecast: " + queryURLForecast + searchValue + APIKey);
       }
     });
   }
+  
+  var queryURLUV = "http://api.openweathermap.org/data/2.5/uvi?appid=58474e01b34b813bae3350fc4c88341e";
 
   function getUVIndex(lat, lon) {
     $.ajax({
-      type: "",
-      url: "" + lat + "&lon=" + lon,
+      type: "GET",
+      url: queryURLUV + "&lat=" + lat + "&lon=" + lon,
       dataType: "json",
       success: function(data) {
-        var uv = $("<p>").text("UV Index: ");
-        var btn = $("<span>").addClass("btn btn-sm").text(data.value);
+        console.log("UV: " + queryURLUV + "&lat=" + lat + "&lon=" + lon);
+        var btn = $("#UV");
         
         // change color depending on uv value
-        
-        $("#today .card-body").append(uv.append(btn));
+        if(data.value >= 11) {
+          btn.attr("style", "background-color: orange");
+        }
+        else if(data.value >= 8) {
+          btn.addClass("btn-danger");
+        }
+        else if(data.value >= 6) {
+          btn.attr("style", "background-color: pink");
+        }
+        else if(data.value >= 3) {
+          btn.addClass("btn-warning");
+        }
+        else {
+          btn.addClass("btn-success");
+        }
+
+        btn.addClass("btn btn-sm").text(data.value);
       }
     });
   }
