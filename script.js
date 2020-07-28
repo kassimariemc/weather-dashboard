@@ -100,7 +100,7 @@ $(document).ready(function() {
   }
   
   // UV data
-  var queryURLUV = "http://api.openweathermap.org/data/2.5/uvi?appid=58474e01b34b813bae3350fc4c88341e";
+  var queryURLUV = "https://api.openweathermap.org/data/2.5/uvi?appid=58474e01b34b813bae3350fc4c88341e";
 
   function getUVIndex(lat, lon) {
     $.ajax({
